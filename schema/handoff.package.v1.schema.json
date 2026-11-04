@@ -1,0 +1,968 @@
+{
+  "$defs": {
+    "ArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "log",
+          "title": "Kind",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "media_type": {
+          "const": "application/json",
+          "default": "application/json",
+          "title": "Media Type",
+          "type": "string"
+        },
+        "model_role": {
+          "enum": [
+            "A",
+            "B"
+          ],
+          "title": "Model Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "uri",
+        "content_hash",
+        "model_role"
+      ],
+      "title": "ArtifactRef",
+      "type": "object"
+    },
+    "Claims": {
+      "additionalProperties": false,
+      "properties": {
+        "hypothetical_scenario": {
+          "const": true,
+          "title": "Hypothetical Scenario",
+          "type": "boolean"
+        },
+        "real_42dot_data": {
+          "const": false,
+          "title": "Real 42Dot Data",
+          "type": "boolean"
+        },
+        "measured_performance_claim": {
+          "const": false,
+          "title": "Measured Performance Claim",
+          "type": "boolean"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hypothetical_scenario",
+        "real_42dot_data",
+        "measured_performance_claim",
+        "note"
+      ],
+      "title": "Claims",
+      "type": "object"
+    },
+    "ExecutionEnvironment": {
+      "additionalProperties": false,
+      "properties": {
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "simulator_version": {
+          "title": "Simulator Version",
+          "type": "string"
+        },
+        "container_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Container Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seed",
+        "simulator_version",
+        "container_digest"
+      ],
+      "title": "ExecutionEnvironment",
+      "type": "object"
+    },
+    "FollowUpTask": {
+      "additionalProperties": false,
+      "properties": {
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "reproduce",
+            "variant",
+            "review"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "recommended_test_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommended Test Id"
+        }
+      },
+      "required": [
+        "task_id",
+        "summary",
+        "kind"
+      ],
+      "title": "FollowUpTask",
+      "type": "object"
+    },
+    "KpiReport": {
+      "additionalProperties": false,
+      "properties": {
+        "collision": {
+          "title": "Collision",
+          "type": "boolean"
+        },
+        "min_distance_m": {
+          "title": "Min Distance M",
+          "type": "number"
+        },
+        "lane_departure": {
+          "title": "Lane Departure",
+          "type": "boolean"
+        },
+        "max_lane_offset_m": {
+          "title": "Max Lane Offset M",
+          "type": "number"
+        },
+        "reaction_time_s": {
+          "title": "Reaction Time S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "collision",
+        "min_distance_m",
+        "lane_departure",
+        "max_lane_offset_m",
+        "reaction_time_s"
+      ],
+      "title": "KpiReport",
+      "type": "object"
+    },
+    "ModelCheckpoint": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "enum": [
+            "A",
+            "B"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "display_name": {
+          "title": "Display Name",
+          "type": "string"
+        },
+        "checkpoint_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Checkpoint Hash",
+          "type": "string"
+        },
+        "synthetic_model_card": {
+          "$ref": "#/$defs/SyntheticModelCard"
+        }
+      },
+      "required": [
+        "role",
+        "display_name",
+        "checkpoint_hash",
+        "synthetic_model_card"
+      ],
+      "title": "ModelCheckpoint",
+      "type": "object"
+    },
+    "ObservedRegression": {
+      "additionalProperties": false,
+      "properties": {
+        "material": {
+          "title": "Material",
+          "type": "boolean"
+        },
+        "reasons": {
+          "items": {
+            "$ref": "#/$defs/ReasonCode"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "kpi_rule_version": {
+          "title": "Kpi Rule Version",
+          "type": "string"
+        },
+        "model_a": {
+          "$ref": "#/$defs/KpiReport"
+        },
+        "model_b": {
+          "$ref": "#/$defs/KpiReport"
+        },
+        "kpi_fingerprint": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Kpi Fingerprint",
+          "type": "string"
+        }
+      },
+      "required": [
+        "material",
+        "reasons",
+        "kpi_rule_version",
+        "model_a",
+        "model_b",
+        "kpi_fingerprint"
+      ],
+      "title": "ObservedRegression",
+      "type": "object"
+    },
+    "Ownership": {
+      "additionalProperties": false,
+      "properties": {
+        "owner": {
+          "title": "Owner",
+          "type": "string"
+        },
+        "region": {
+          "enum": [
+            "KR",
+            "US"
+          ],
+          "title": "Region",
+          "type": "string"
+        },
+        "job_id": {
+          "title": "Job Id",
+          "type": "string"
+        },
+        "attempt_id": {
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "lease_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lease Token"
+        },
+        "lease_expires_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lease Expires At"
+        },
+        "idempotency_key": {
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "next_owner": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Owner"
+        },
+        "related_job_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Related Job Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "owner",
+        "region",
+        "job_id",
+        "attempt_id",
+        "state",
+        "idempotency_key"
+      ],
+      "title": "Ownership",
+      "type": "object"
+    },
+    "ReasonCode": {
+      "enum": [
+        "new_collision",
+        "new_lane_departure",
+        "min_distance_drop"
+      ],
+      "title": "ReasonCode",
+      "type": "string"
+    },
+    "RecommendedTest": {
+      "additionalProperties": false,
+      "properties": {
+        "test_id": {
+          "title": "Test Id",
+          "type": "string"
+        },
+        "purpose_ko": {
+          "title": "Purpose Ko",
+          "type": "string"
+        },
+        "purpose_en": {
+          "title": "Purpose En",
+          "type": "string"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "parameter_overrides": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Parameter Overrides",
+          "type": "object"
+        },
+        "executable_from_package_alone": {
+          "const": true,
+          "default": true,
+          "title": "Executable From Package Alone",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "test_id",
+        "purpose_ko",
+        "purpose_en",
+        "seed",
+        "parameter_overrides"
+      ],
+      "title": "RecommendedTest",
+      "type": "object"
+    },
+    "RecordedVariant": {
+      "additionalProperties": false,
+      "properties": {
+        "test_id": {
+          "title": "Test Id",
+          "type": "string"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "parameter_overrides": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Parameter Overrides",
+          "type": "object"
+        },
+        "parameter_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Parameter Hash",
+          "type": "string"
+        },
+        "material": {
+          "title": "Material",
+          "type": "boolean"
+        },
+        "reasons": {
+          "items": {
+            "$ref": "#/$defs/ReasonCode"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "kpi_rule_version": {
+          "title": "Kpi Rule Version",
+          "type": "string"
+        },
+        "model_a": {
+          "$ref": "#/$defs/KpiReport"
+        },
+        "model_b": {
+          "$ref": "#/$defs/KpiReport"
+        },
+        "kpi_fingerprint": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Kpi Fingerprint",
+          "type": "string"
+        },
+        "job_id": {
+          "title": "Job Id",
+          "type": "string"
+        },
+        "attempt_id": {
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "artifacts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "title": "Artifacts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "test_id",
+        "seed",
+        "parameter_overrides",
+        "parameter_hash",
+        "material",
+        "reasons",
+        "kpi_rule_version",
+        "model_a",
+        "model_b",
+        "kpi_fingerprint",
+        "job_id",
+        "attempt_id",
+        "artifacts"
+      ],
+      "title": "RecordedVariant",
+      "type": "object"
+    },
+    "ReproductionCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "matched": {
+          "title": "Matched",
+          "type": "boolean"
+        },
+        "kpi_fingerprint": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Kpi Fingerprint",
+          "type": "string"
+        },
+        "job_id": {
+          "title": "Job Id",
+          "type": "string"
+        },
+        "attempt_id": {
+          "title": "Attempt Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "matched",
+        "kpi_fingerprint",
+        "job_id",
+        "attempt_id"
+      ],
+      "title": "ReproductionCheck",
+      "type": "object"
+    },
+    "RootCauseHypothesis": {
+      "additionalProperties": false,
+      "properties": {
+        "statement": {
+          "title": "Statement",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "confidence_is_calibrated": {
+          "const": false,
+          "title": "Confidence Is Calibrated",
+          "type": "boolean"
+        },
+        "unconfirmed": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Unconfirmed",
+          "type": "array"
+        }
+      },
+      "required": [
+        "statement",
+        "confidence",
+        "confidence_is_calibrated",
+        "unconfirmed"
+      ],
+      "title": "RootCauseHypothesis",
+      "type": "object"
+    },
+    "SafetyProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "profile_id": {
+          "const": "safety-profile-hypothetical-urban-v1",
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "kpi_rule_version": {
+          "const": "kpi-rules-2026.11-draft",
+          "title": "Kpi Rule Version",
+          "type": "string"
+        },
+        "collision_distance_m": {
+          "title": "Collision Distance M",
+          "type": "number"
+        },
+        "min_safe_distance_m": {
+          "title": "Min Safe Distance M",
+          "type": "number"
+        },
+        "material_distance_drop_m": {
+          "title": "Material Distance Drop M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "profile_id",
+        "kpi_rule_version",
+        "collision_distance_m",
+        "min_safe_distance_m",
+        "material_distance_drop_m"
+      ],
+      "title": "SafetyProfile",
+      "type": "object"
+    },
+    "ScenarioParameters": {
+      "additionalProperties": false,
+      "properties": {
+        "weather": {
+          "const": "rain",
+          "title": "Weather",
+          "type": "string"
+        },
+        "time_of_day": {
+          "const": "night",
+          "title": "Time Of Day",
+          "type": "string"
+        },
+        "location_type": {
+          "const": "signalized_intersection",
+          "title": "Location Type",
+          "type": "string"
+        },
+        "dt_s": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 0.2,
+          "title": "Dt S",
+          "type": "number"
+        },
+        "horizon_s": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 30.0,
+          "title": "Horizon S",
+          "type": "number"
+        },
+        "ego_initial_speed_mps": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 40.0,
+          "title": "Ego Initial Speed Mps",
+          "type": "number"
+        },
+        "ego_initial_x_m": {
+          "title": "Ego Initial X M",
+          "type": "number"
+        },
+        "ego_initial_y_m": {
+          "title": "Ego Initial Y M",
+          "type": "number"
+        },
+        "pedestrian_x_m": {
+          "title": "Pedestrian X M",
+          "type": "number"
+        },
+        "pedestrian_initial_y_m": {
+          "title": "Pedestrian Initial Y M",
+          "type": "number"
+        },
+        "pedestrian_speed_mps": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 5.0,
+          "title": "Pedestrian Speed Mps",
+          "type": "number"
+        },
+        "occlusion_until_y_m": {
+          "title": "Occlusion Until Y M",
+          "type": "number"
+        },
+        "lane_center_y_m": {
+          "title": "Lane Center Y M",
+          "type": "number"
+        },
+        "lane_half_width_m": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 5.0,
+          "title": "Lane Half Width M",
+          "type": "number"
+        },
+        "seed_offset_scale_m": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Seed Offset Scale M",
+          "type": "number"
+        },
+        "seed_offset_formula": {
+          "title": "Seed Offset Formula",
+          "type": "string"
+        }
+      },
+      "required": [
+        "weather",
+        "time_of_day",
+        "location_type",
+        "dt_s",
+        "horizon_s",
+        "ego_initial_speed_mps",
+        "ego_initial_x_m",
+        "ego_initial_y_m",
+        "pedestrian_x_m",
+        "pedestrian_initial_y_m",
+        "pedestrian_speed_mps",
+        "occlusion_until_y_m",
+        "lane_center_y_m",
+        "lane_half_width_m",
+        "seed_offset_scale_m",
+        "seed_offset_formula"
+      ],
+      "title": "ScenarioParameters",
+      "type": "object"
+    },
+    "ScenarioRef": {
+      "additionalProperties": false,
+      "properties": {
+        "scenario_id": {
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "dataset_version": {
+          "title": "Dataset Version",
+          "type": "string"
+        },
+        "summary_ko": {
+          "title": "Summary Ko",
+          "type": "string"
+        },
+        "summary_en": {
+          "title": "Summary En",
+          "type": "string"
+        },
+        "hypothetical": {
+          "const": true,
+          "title": "Hypothetical",
+          "type": "boolean"
+        },
+        "parameters": {
+          "$ref": "#/$defs/ScenarioParameters"
+        },
+        "parameter_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Parameter Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "dataset_version",
+        "summary_ko",
+        "summary_en",
+        "hypothetical",
+        "parameters",
+        "parameter_hash"
+      ],
+      "title": "ScenarioRef",
+      "type": "object"
+    },
+    "SyntheticModelCard": {
+      "additionalProperties": false,
+      "properties": {
+        "reaction_delay_s": {
+          "exclusiveMaximum": 10.0,
+          "exclusiveMinimum": 0.0,
+          "title": "Reaction Delay S",
+          "type": "number"
+        },
+        "brake_decel_mps2": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 12.0,
+          "title": "Brake Decel Mps2",
+          "type": "number"
+        },
+        "swerve_lateral_accel_mps2": {
+          "maximum": 5.0,
+          "minimum": 0.0,
+          "title": "Swerve Lateral Accel Mps2",
+          "type": "number"
+        },
+        "swerve_ttc_threshold_s": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 5.0,
+          "title": "Swerve Ttc Threshold S",
+          "type": "number"
+        },
+        "max_lateral_speed_mps": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 5.0,
+          "title": "Max Lateral Speed Mps",
+          "type": "number"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reaction_delay_s",
+        "brake_decel_mps2",
+        "swerve_lateral_accel_mps2",
+        "swerve_ttc_threshold_s",
+        "max_lateral_speed_mps",
+        "note"
+      ],
+      "title": "SyntheticModelCard",
+      "type": "object"
+    },
+    "Verdict": {
+      "additionalProperties": false,
+      "description": "One of the four end states from the proposal.\n\n``Inconclusive`` is rejected unless ``follow_up_tasks`` is non-empty.\n``Confirmed`` means the regression reproduced under the pre-declared\nrules. It does not mean the root-cause hypothesis was proven.",
+      "properties": {
+        "state": {
+          "enum": [
+            "Confirmed",
+            "No Material Regression",
+            "Inconclusive",
+            "Not Evaluated"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "follow_up_tasks": {
+          "items": {
+            "$ref": "#/$defs/FollowUpTask"
+          },
+          "title": "Follow Up Tasks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "state",
+        "rationale"
+      ],
+      "title": "Verdict",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "fts.handoff.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "package_id": {
+      "title": "Package Id",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "parent_package_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parent Package Id"
+    },
+    "parent_content_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parent Content Hash"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "created_by": {
+      "title": "Created By",
+      "type": "string"
+    },
+    "region": {
+      "enum": [
+        "KR",
+        "US"
+      ],
+      "title": "Region",
+      "type": "string"
+    },
+    "claims": {
+      "$ref": "#/$defs/Claims"
+    },
+    "models": {
+      "items": {
+        "$ref": "#/$defs/ModelCheckpoint"
+      },
+      "title": "Models",
+      "type": "array"
+    },
+    "scenario": {
+      "$ref": "#/$defs/ScenarioRef"
+    },
+    "environment": {
+      "$ref": "#/$defs/ExecutionEnvironment"
+    },
+    "safety": {
+      "$ref": "#/$defs/SafetyProfile"
+    },
+    "observed_regression": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ObservedRegression"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "artifacts": {
+      "items": {
+        "$ref": "#/$defs/ArtifactRef"
+      },
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "root_cause": {
+      "$ref": "#/$defs/RootCauseHypothesis"
+    },
+    "recommended_next_tests": {
+      "items": {
+        "$ref": "#/$defs/RecommendedTest"
+      },
+      "title": "Recommended Next Tests",
+      "type": "array"
+    },
+    "recorded_variants": {
+      "items": {
+        "$ref": "#/$defs/RecordedVariant"
+      },
+      "title": "Recorded Variants",
+      "type": "array"
+    },
+    "reproduction": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReproductionCheck"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "ownership": {
+      "$ref": "#/$defs/Ownership"
+    },
+    "verdict": {
+      "$ref": "#/$defs/Verdict"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    }
+  },
+  "required": [
+    "schema_version",
+    "package_id",
+    "revision",
+    "created_at",
+    "created_by",
+    "region",
+    "claims",
+    "models",
+    "scenario",
+    "environment",
+    "safety",
+    "observed_regression",
+    "artifacts",
+    "root_cause",
+    "recommended_next_tests",
+    "ownership",
+    "verdict"
+  ],
+  "title": "HandoffPackage",
+  "type": "object"
+}

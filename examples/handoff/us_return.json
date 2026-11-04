@@ -1,0 +1,249 @@
+{
+  "artifacts": [
+    {
+      "content_hash": "5f44773073dab0139b82f4bd278e63370ec9283f473e4e405545b30a790df6b6",
+      "kind": "log",
+      "media_type": "application/json",
+      "model_role": "A",
+      "uri": "repo://examples/logs/kr_model_a.json"
+    },
+    {
+      "content_hash": "d8bb4dfdb9c95987a19f7cad7e7c8928838c230d5190dbbbfe716e8fe4a745aa",
+      "kind": "log",
+      "media_type": "application/json",
+      "model_role": "B",
+      "uri": "repo://examples/logs/kr_model_b.json"
+    },
+    {
+      "content_hash": "5f44773073dab0139b82f4bd278e63370ec9283f473e4e405545b30a790df6b6",
+      "kind": "log",
+      "media_type": "application/json",
+      "model_role": "A",
+      "uri": "repo://examples/logs/us_repro_model_a.json"
+    },
+    {
+      "content_hash": "d8bb4dfdb9c95987a19f7cad7e7c8928838c230d5190dbbbfe716e8fe4a745aa",
+      "kind": "log",
+      "media_type": "application/json",
+      "model_role": "B",
+      "uri": "repo://examples/logs/us_repro_model_b.json"
+    },
+    {
+      "content_hash": "140d9ebea8cceeaf5fe1811a5a5f1ca6be45d66792ed7196ab672c9f6937d075",
+      "kind": "log",
+      "media_type": "application/json",
+      "model_role": "A",
+      "uri": "repo://examples/logs/us_variant_model_a.json"
+    },
+    {
+      "content_hash": "a89104f6fd208ca1c85559baa9d1edb3ac984a86c55a8934fb76843497d3c18c",
+      "kind": "log",
+      "media_type": "application/json",
+      "model_role": "B",
+      "uri": "repo://examples/logs/us_variant_model_b.json"
+    }
+  ],
+  "claims": {
+    "hypothetical_scenario": true,
+    "measured_performance_claim": false,
+    "note": "Hypothetical course scenario. Not a real 42dot incident, log, model, or measured performance result. Unconfirmed items remain unconfirmed.",
+    "real_42dot_data": false
+  },
+  "content_hash": "ca7cef7071a8cd16d2e98cc4332dd237ab311fac5910bfeebadb04857bb294d6",
+  "created_at": "2026-11-02T15:00:00Z",
+  "created_by": "us-validation",
+  "environment": {
+    "container_digest": "sha256:13f55387385c9afa664ba2de1aa4e9e1f32dda6f385e68b95cc30befddc42b6d",
+    "seed": 20261102,
+    "simulator_version": "fts-replay-0.1.0"
+  },
+  "models": [
+    {
+      "checkpoint_hash": "91a8178259bc03fdf1df8bf7bcdcd32d02e9d48226b3b89f51968287ba5c3bf4",
+      "display_name": "hypothetical-baseline-A",
+      "role": "A",
+      "synthetic_model_card": {
+        "brake_decel_mps2": 6.0,
+        "max_lateral_speed_mps": 3.0,
+        "note": "Synthetic behavior card standing in for a checkpoint that is not in this repository. Not a neural network and not a 42dot model.",
+        "reaction_delay_s": 0.4,
+        "swerve_lateral_accel_mps2": 0.0,
+        "swerve_ttc_threshold_s": 1.2
+      }
+    },
+    {
+      "checkpoint_hash": "df69653b597326f9f55aa251bc4ac22afda9f2db9b00abf5667c71d505ff6bed",
+      "display_name": "hypothetical-candidate-B",
+      "role": "B",
+      "synthetic_model_card": {
+        "brake_decel_mps2": 6.0,
+        "max_lateral_speed_mps": 3.0,
+        "note": "Synthetic behavior card standing in for a checkpoint that is not in this repository. Not a neural network and not a 42dot model.",
+        "reaction_delay_s": 1.3,
+        "swerve_lateral_accel_mps2": 2.2,
+        "swerve_ttc_threshold_s": 1.0
+      }
+    }
+  ],
+  "observed_regression": {
+    "kpi_fingerprint": "5ed1a0a7f275ba315de902a3a14b34be04ca6c5cc96c2ec528e3ff1b53f8b3f6",
+    "kpi_rule_version": "kpi-rules-2026.11-draft",
+    "material": true,
+    "model_a": {
+      "collision": false,
+      "lane_departure": false,
+      "max_lane_offset_m": 0.0,
+      "min_distance_m": 5.132312,
+      "reaction_time_s": 0.483333
+    },
+    "model_b": {
+      "collision": true,
+      "lane_departure": true,
+      "max_lane_offset_m": 2.211,
+      "min_distance_m": 0.52985,
+      "reaction_time_s": 1.383333
+    },
+    "reasons": [
+      "new_collision",
+      "new_lane_departure",
+      "min_distance_drop"
+    ]
+  },
+  "ownership": {
+    "attempt_id": "attempt-0008",
+    "idempotency_key": "us-variant-commit",
+    "job_id": "job-0007",
+    "lease_expires_at": null,
+    "lease_token": null,
+    "next_owner": "kr-validation",
+    "owner": "kr-validation",
+    "region": "KR",
+    "related_job_ids": [
+      "job-0004"
+    ],
+    "state": "HANDED_OFF"
+  },
+  "package_id": "pkg-us-rainy-night-return",
+  "parent_content_hash": "605b556e26f068d559e837734760d4c4d5fe522717cb2dfbbb3e7a7e6aa05863",
+  "parent_package_id": "pkg-kr-rainy-night-discovery",
+  "recommended_next_tests": [
+    {
+      "executable_from_package_alone": true,
+      "parameter_overrides": {
+        "pedestrian_speed_mps": 1.6
+      },
+      "purpose_en": "Raise pedestrian speed to 1.6 m/s so the post-occlusion margin is shorter.",
+      "purpose_ko": "보행자 속도를 1.6 m/s로 올려 가림 이후 여유가 더 짧은 경우를 본다.",
+      "seed": 20261102,
+      "test_id": "variant-pedestrian-speed-1.6"
+    }
+  ],
+  "recorded_variants": [
+    {
+      "artifacts": [
+        {
+          "content_hash": "140d9ebea8cceeaf5fe1811a5a5f1ca6be45d66792ed7196ab672c9f6937d075",
+          "kind": "log",
+          "media_type": "application/json",
+          "model_role": "A",
+          "uri": "repo://examples/logs/us_variant_model_a.json"
+        },
+        {
+          "content_hash": "a89104f6fd208ca1c85559baa9d1edb3ac984a86c55a8934fb76843497d3c18c",
+          "kind": "log",
+          "media_type": "application/json",
+          "model_role": "B",
+          "uri": "repo://examples/logs/us_variant_model_b.json"
+        }
+      ],
+      "attempt_id": "attempt-0008",
+      "job_id": "job-0007",
+      "kpi_fingerprint": "6ff19dd2e35cce5e8cd5ad9985e1fd8692848f47b0f9010d6b179b7c0d4061d3",
+      "kpi_rule_version": "kpi-rules-2026.11-draft",
+      "material": true,
+      "model_a": {
+        "collision": false,
+        "lane_departure": false,
+        "max_lane_offset_m": 0.0,
+        "min_distance_m": 7.538408,
+        "reaction_time_s": 0.45
+      },
+      "model_b": {
+        "collision": true,
+        "lane_departure": true,
+        "max_lane_offset_m": 3.135,
+        "min_distance_m": 0.451714,
+        "reaction_time_s": 1.35
+      },
+      "parameter_hash": "c3192c04b6b055b8a3b75c5b02393c5f6616e123e780b13a9b5706c1a1819536",
+      "parameter_overrides": {
+        "pedestrian_speed_mps": 1.6
+      },
+      "reasons": [
+        "new_collision",
+        "new_lane_departure",
+        "min_distance_drop"
+      ],
+      "seed": 20261102,
+      "test_id": "variant-pedestrian-speed-1.6"
+    }
+  ],
+  "region": "US",
+  "reproduction": {
+    "attempt_id": "attempt-0005",
+    "job_id": "job-0004",
+    "kpi_fingerprint": "5ed1a0a7f275ba315de902a3a14b34be04ca6c5cc96c2ec528e3ff1b53f8b3f6",
+    "matched": true
+  },
+  "revision": 2,
+  "root_cause": {
+    "confidence": 0.35,
+    "confidence_is_calibrated": false,
+    "statement": "가설(미확정): 후보 모델 B는 가림이 풀린 뒤 보행자에 대한 제동이 베이스라인보다 늦다. Hypothesis (unconfirmed): candidate B brakes later after the pedestrian leaves occlusion.",
+    "unconfirmed": [
+      "Perception delay, prediction delay, and planner delay are not separated.",
+      "The scene is synthetic. No 42dot log was used.",
+      "Rain, sensor noise, and occlusion duration were not swept.",
+      "The confidence value is an analyst label for this hypothetical, not a calibrated probability."
+    ]
+  },
+  "safety": {
+    "collision_distance_m": 0.75,
+    "kpi_rule_version": "kpi-rules-2026.11-draft",
+    "material_distance_drop_m": 0.5,
+    "min_safe_distance_m": 1.5,
+    "profile_id": "safety-profile-hypothetical-urban-v1"
+  },
+  "scenario": {
+    "dataset_version": "2026.11.02-hypothetical",
+    "hypothetical": true,
+    "parameter_hash": "5b6e933f42464c00b55e99e0512545152d18c7406df9b1e323839cc332982170",
+    "parameters": {
+      "dt_s": 0.05,
+      "ego_initial_speed_mps": 12.0,
+      "ego_initial_x_m": 0.0,
+      "ego_initial_y_m": 0.0,
+      "horizon_s": 8.0,
+      "lane_center_y_m": 0.0,
+      "lane_half_width_m": 1.75,
+      "location_type": "signalized_intersection",
+      "occlusion_until_y_m": -3.0,
+      "pedestrian_initial_y_m": -7.0,
+      "pedestrian_speed_mps": 1.5,
+      "pedestrian_x_m": 54.0,
+      "seed_offset_formula": "(seed % 5 - 2) * seed_offset_scale_m",
+      "seed_offset_scale_m": 0.01,
+      "time_of_day": "night",
+      "weather": "rain"
+    },
+    "scenario_id": "hypothetical-rainy-night-intersection-pedestrian",
+    "summary_en": "Hypothetical: at a signalized intersection on a rainy night, a pedestrian who was occluded steps into the ego lane. Not a real 42dot incident or log.",
+    "summary_ko": "가상 사례: 비 오는 밤, 신호가 있는 교차로에서 가려져 있던 보행자가 차선으로 들어온다. 실제 42dot 사고나 로그가 아니다."
+  },
+  "schema_version": "fts.handoff.v1",
+  "verdict": {
+    "follow_up_tasks": [],
+    "rationale": "The receiving region reproduced the KPI fingerprint from the package alone, and the pre-declared variant also showed a material regression under the same rules. Confirmed describes that regression, not the root-cause hypothesis. The hypothesis confidence is unchanged and is not a calibrated probability.",
+    "state": "Confirmed"
+  }
+}

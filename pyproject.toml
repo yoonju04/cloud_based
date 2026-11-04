@@ -1,0 +1,27 @@
+[project]
+name = "fts-sil-validation"
+version = "0.1.0"
+description = "Course PoC: follow-the-sun SIL validation handoff. A proposal scaffold, not a verified 42dot system."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic==2.10.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.5",
+]
+
+[project.scripts]
+fts = "fts.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

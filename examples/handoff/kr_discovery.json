@@ -1,0 +1,178 @@
+{
+  "artifacts": [
+    {
+      "content_hash": "5f44773073dab0139b82f4bd278e63370ec9283f473e4e405545b30a790df6b6",
+      "kind": "log",
+      "media_type": "application/json",
+      "model_role": "A",
+      "uri": "repo://examples/logs/kr_model_a.json"
+    },
+    {
+      "content_hash": "d8bb4dfdb9c95987a19f7cad7e7c8928838c230d5190dbbbfe716e8fe4a745aa",
+      "kind": "log",
+      "media_type": "application/json",
+      "model_role": "B",
+      "uri": "repo://examples/logs/kr_model_b.json"
+    }
+  ],
+  "claims": {
+    "hypothetical_scenario": true,
+    "measured_performance_claim": false,
+    "note": "Hypothetical course scenario. Not a real 42dot incident, log, model, or measured performance result. Unconfirmed items remain unconfirmed.",
+    "real_42dot_data": false
+  },
+  "content_hash": "605b556e26f068d559e837734760d4c4d5fe522717cb2dfbbb3e7a7e6aa05863",
+  "created_at": "2026-11-02T09:00:00Z",
+  "created_by": "kr-validation",
+  "environment": {
+    "container_digest": "sha256:13f55387385c9afa664ba2de1aa4e9e1f32dda6f385e68b95cc30befddc42b6d",
+    "seed": 20261102,
+    "simulator_version": "fts-replay-0.1.0"
+  },
+  "models": [
+    {
+      "checkpoint_hash": "91a8178259bc03fdf1df8bf7bcdcd32d02e9d48226b3b89f51968287ba5c3bf4",
+      "display_name": "hypothetical-baseline-A",
+      "role": "A",
+      "synthetic_model_card": {
+        "brake_decel_mps2": 6.0,
+        "max_lateral_speed_mps": 3.0,
+        "note": "Synthetic behavior card standing in for a checkpoint that is not in this repository. Not a neural network and not a 42dot model.",
+        "reaction_delay_s": 0.4,
+        "swerve_lateral_accel_mps2": 0.0,
+        "swerve_ttc_threshold_s": 1.2
+      }
+    },
+    {
+      "checkpoint_hash": "df69653b597326f9f55aa251bc4ac22afda9f2db9b00abf5667c71d505ff6bed",
+      "display_name": "hypothetical-candidate-B",
+      "role": "B",
+      "synthetic_model_card": {
+        "brake_decel_mps2": 6.0,
+        "max_lateral_speed_mps": 3.0,
+        "note": "Synthetic behavior card standing in for a checkpoint that is not in this repository. Not a neural network and not a 42dot model.",
+        "reaction_delay_s": 1.3,
+        "swerve_lateral_accel_mps2": 2.2,
+        "swerve_ttc_threshold_s": 1.0
+      }
+    }
+  ],
+  "observed_regression": {
+    "kpi_fingerprint": "5ed1a0a7f275ba315de902a3a14b34be04ca6c5cc96c2ec528e3ff1b53f8b3f6",
+    "kpi_rule_version": "kpi-rules-2026.11-draft",
+    "material": true,
+    "model_a": {
+      "collision": false,
+      "lane_departure": false,
+      "max_lane_offset_m": 0.0,
+      "min_distance_m": 5.132312,
+      "reaction_time_s": 0.483333
+    },
+    "model_b": {
+      "collision": true,
+      "lane_departure": true,
+      "max_lane_offset_m": 2.211,
+      "min_distance_m": 0.52985,
+      "reaction_time_s": 1.383333
+    },
+    "reasons": [
+      "new_collision",
+      "new_lane_departure",
+      "min_distance_drop"
+    ]
+  },
+  "ownership": {
+    "attempt_id": "attempt-0002",
+    "idempotency_key": "kr-commit",
+    "job_id": "job-0001",
+    "lease_expires_at": null,
+    "lease_token": null,
+    "next_owner": "us-validation",
+    "owner": "us-validation",
+    "region": "US",
+    "related_job_ids": [],
+    "state": "HANDED_OFF"
+  },
+  "package_id": "pkg-kr-rainy-night-discovery",
+  "parent_content_hash": null,
+  "parent_package_id": null,
+  "recommended_next_tests": [
+    {
+      "executable_from_package_alone": true,
+      "parameter_overrides": {
+        "pedestrian_speed_mps": 1.6
+      },
+      "purpose_en": "Raise pedestrian speed to 1.6 m/s so the post-occlusion margin is shorter.",
+      "purpose_ko": "보행자 속도를 1.6 m/s로 올려 가림 이후 여유가 더 짧은 경우를 본다.",
+      "seed": 20261102,
+      "test_id": "variant-pedestrian-speed-1.6"
+    }
+  ],
+  "recorded_variants": [],
+  "region": "KR",
+  "reproduction": null,
+  "revision": 1,
+  "root_cause": {
+    "confidence": 0.35,
+    "confidence_is_calibrated": false,
+    "statement": "가설(미확정): 후보 모델 B는 가림이 풀린 뒤 보행자에 대한 제동이 베이스라인보다 늦다. Hypothesis (unconfirmed): candidate B brakes later after the pedestrian leaves occlusion.",
+    "unconfirmed": [
+      "Perception delay, prediction delay, and planner delay are not separated.",
+      "The scene is synthetic. No 42dot log was used.",
+      "Rain, sensor noise, and occlusion duration were not swept.",
+      "The confidence value is an analyst label for this hypothetical, not a calibrated probability."
+    ]
+  },
+  "safety": {
+    "collision_distance_m": 0.75,
+    "kpi_rule_version": "kpi-rules-2026.11-draft",
+    "material_distance_drop_m": 0.5,
+    "min_safe_distance_m": 1.5,
+    "profile_id": "safety-profile-hypothetical-urban-v1"
+  },
+  "scenario": {
+    "dataset_version": "2026.11.02-hypothetical",
+    "hypothetical": true,
+    "parameter_hash": "5b6e933f42464c00b55e99e0512545152d18c7406df9b1e323839cc332982170",
+    "parameters": {
+      "dt_s": 0.05,
+      "ego_initial_speed_mps": 12.0,
+      "ego_initial_x_m": 0.0,
+      "ego_initial_y_m": 0.0,
+      "horizon_s": 8.0,
+      "lane_center_y_m": 0.0,
+      "lane_half_width_m": 1.75,
+      "location_type": "signalized_intersection",
+      "occlusion_until_y_m": -3.0,
+      "pedestrian_initial_y_m": -7.0,
+      "pedestrian_speed_mps": 1.5,
+      "pedestrian_x_m": 54.0,
+      "seed_offset_formula": "(seed % 5 - 2) * seed_offset_scale_m",
+      "seed_offset_scale_m": 0.01,
+      "time_of_day": "night",
+      "weather": "rain"
+    },
+    "scenario_id": "hypothetical-rainy-night-intersection-pedestrian",
+    "summary_en": "Hypothetical: at a signalized intersection on a rainy night, a pedestrian who was occluded steps into the ego lane. Not a real 42dot incident or log.",
+    "summary_ko": "가상 사례: 비 오는 밤, 신호가 있는 교차로에서 가려져 있던 보행자가 차선으로 들어온다. 실제 42dot 사고나 로그가 아니다."
+  },
+  "schema_version": "fts.handoff.v1",
+  "verdict": {
+    "follow_up_tasks": [
+      {
+        "kind": "reproduce",
+        "recommended_test_id": null,
+        "summary": "Re-run model A and model B with the seed, scenario parameters, simulator version, container digest, and KPI rule version in this package. Do not substitute a different scene.",
+        "task_id": "followup-reproduce"
+      },
+      {
+        "kind": "variant",
+        "recommended_test_id": "variant-pedestrian-speed-1.6",
+        "summary": "Run recommended test variant-pedestrian-speed-1.6. The overrides and seed are on that test object.",
+        "task_id": "followup-variant-pedestrian-speed"
+      }
+    ],
+    "rationale": "A material regression was observed at the discovering site. That is not a closed verdict: another region still has to reproduce the fingerprint, and the recommended variant has not been run. The root-cause hypothesis stays unconfirmed.",
+    "state": "Inconclusive"
+  }
+}

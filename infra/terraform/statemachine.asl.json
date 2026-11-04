@@ -1,0 +1,123 @@
+{
+  "Comment": "PROPOSAL SKETCH. Not deployed. The executable state machine is the Python JobService. SQS delivery is at-least-once, so CommitResult is a conditional write on commit_count = 0 and the idempotency key. A duplicate message must not commit twice. This ASL is a cloud-shaped outline, not a line-by-line proof of the Python transitions.",
+  "StartAt": "ClaimLease",
+  "States": {
+    "ClaimLease": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${jobs_table}",
+        "Key": {
+          "job_id": {
+            "S.$": "$.job_id"
+          }
+        },
+        "ConditionExpression": "#s = :queued",
+        "UpdateExpression": "SET #s = :leased, lease_token = :token, lease_expires_at = :exp, attempt_id = :attempt ADD version :one",
+        "ExpressionAttributeNames": {
+          "#s": "state"
+        },
+        "ExpressionAttributeValues": {
+          ":queued": {
+            "S": "QUEUED"
+          },
+          ":leased": {
+            "S": "LEASED"
+          },
+          ":token": {
+            "S.$": "$.lease_token"
+          },
+          ":exp": {
+            "N.$": "$.lease_expires_at"
+          },
+          ":attempt": {
+            "S.$": "$.attempt_id"
+          },
+          ":one": {
+            "N": "1"
+          }
+        }
+      },
+      "ResultPath": "$.claim",
+      "Next": "Dispatch",
+      "Catch": [
+        {
+          "ErrorEquals": ["DynamoDB.ConditionalCheckFailedException"],
+          "ResultPath": "$.error",
+          "Next": "LeaseDenied"
+        }
+      ]
+    },
+    "Dispatch": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage",
+      "Parameters": {
+        "QueueUrl": "${work_queue_url}",
+        "MessageBody": {
+          "job_id.$": "$.job_id",
+          "attempt_id.$": "$.attempt_id",
+          "idempotency_key.$": "$.idempotency_key"
+        }
+      },
+      "ResultPath": "$.dispatch",
+      "Next": "CommitResult"
+    },
+    "CommitResult": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${jobs_table}",
+        "Key": {
+          "job_id": {
+            "S.$": "$.job_id"
+          }
+        },
+        "ConditionExpression": "#s = :pending AND commit_count = :zero AND attempt_id = :attempt",
+        "UpdateExpression": "SET #s = :committed, commit_count = :one, committed_idempotency_key = :key",
+        "ExpressionAttributeNames": {
+          "#s": "state"
+        },
+        "ExpressionAttributeValues": {
+          ":pending": {
+            "S": "RESULTS_PENDING"
+          },
+          ":committed": {
+            "S": "COMMITTED"
+          },
+          ":zero": {
+            "N": "0"
+          },
+          ":one": {
+            "N": "1"
+          },
+          ":attempt": {
+            "S.$": "$.attempt_id"
+          },
+          ":key": {
+            "S.$": "$.idempotency_key"
+          }
+        }
+      },
+      "ResultPath": "$.commit",
+      "Next": "NotedHandoff",
+      "Catch": [
+        {
+          "ErrorEquals": ["DynamoDB.ConditionalCheckFailedException"],
+          "ResultPath": "$.error",
+          "Next": "CommitRejected"
+        }
+      ]
+    },
+    "NotedHandoff": {
+      "Type": "Pass",
+      "Result": "HANDED_OFF is a further conditional write in the Python JobService after COMMITTED. This sketch stops once the single-commit guard is visible.",
+      "End": true
+    },
+    "LeaseDenied": {
+      "Type": "Succeed"
+    },
+    "CommitRejected": {
+      "Type": "Succeed"
+    }
+  }
+}
